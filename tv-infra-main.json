@@ -138,7 +138,7 @@
             "environment": {"value": "[parameters('environment')]" },
             "resourceGroupName": { "value": "[parameters('resourceGroupName')]" },
             "location": { "value": "[parameters('location')]"},
-            "keyvaultname": {"value": "[reference('tv-infra-keyvault.json').outputs.keyvaultname.value]"},
+            "keyVaultName": {"value": "[reference('tv-infra-keyvault.json').outputs.keyvaultname.value]"},
             "serverName": {"value": "[parameters('serverName')]"},
             "administratorLogin": {"value": "[parameters('administratorLogin')]"},
             "administratorPassword": {"value": "[parameters('administratorPassword')]"},

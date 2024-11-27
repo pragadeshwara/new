@@ -3,7 +3,7 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
       "uri": {
-        "value": "https://raw.githubusercontent.com/pragadeshwara/tv-infra/main/"
+        "value": "https://raw.githubusercontent.com/pragadeshwara/new/main/"
       },
       "environment": {
         "value": "staging"
@@ -13,6 +13,25 @@
       },
       "location": {
         "value": "UKsouth"
+      },
+      "Nsg-rule": {
+        "value": {
+          "protocol": "Tcp",
+          "sourcePortRange": "*",
+          "destinationPortRange": "22",
+          "sourceAddressPrefix": "*",
+          "destinationAddressPrefix": "*",
+          "access": "Allow",
+          "direction": "Inbound",
+          "priority": 100,
+          "RuleName": "Allow_SSH"
+        }
+      },
+      "address-prefix": {
+        "value": "10.0.0.0/16"
+      },
+      "subnet1-address-prefix": {
+        "value": "10.0.1.0/24"
       }
     }
 }

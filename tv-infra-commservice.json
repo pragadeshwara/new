@@ -20,7 +20,7 @@
         "name": "[variables('communicationServiceName')]",
         "location": "global",
         "properties": {
-            "dataLocation": "global"
+            "dataLocation": "uk"
         }
       }
     ],

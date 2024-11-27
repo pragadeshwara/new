@@ -1,0 +1,35 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "environment": {
+        "type": "string"
+        },
+        "resourceGroupName": {
+        "type": "string"
+        },
+        "location": {
+        "type": "string"
+        }
+    },
+    "variables": {
+      "communicationServiceType": "Microsoft.Communication/CommunicationServices",
+      "communicationServiceName": "[concat('tv-',parameters('environment'),'-',parameters('resourceGroupName'),'-commservice')]"
+    },
+    "resources": [
+      {
+        "type": "[variables('communicationServiceType')]",
+        "apiVersion": "2023-01-01",
+        "name": "[variables('communicationServiceName')]",
+        "location": "[parameters('location')]",
+        "properties": {}
+      }
+    ],
+    "outputs": {
+      "communicationServiceId": {
+        "type": "string",
+        "value": "[resourceId(variables('communicationServiceType'), variables('communicationServiceName'))]"
+      }
+    }
+  }
+  

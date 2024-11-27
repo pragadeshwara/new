@@ -87,7 +87,7 @@
         "properties": {
           "mode": "Incremental",
           "templateLink": {
-            "uri": "[concat(parameters('uri'),'tv-infra-commservice.json')]"        },
+            "uri": "[concat(parameters('uri'),'tv-infra-commservice.json')]" },
           "parameters": {
             "environment": {"value": "[parameters('environment')]" },
             "resourceGroupName": { "value": "[parameters('resourceGroupName')]" }

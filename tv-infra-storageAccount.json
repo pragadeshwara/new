@@ -52,6 +52,9 @@
       },
       "identity": {
         "type": "SystemAssigned"
+      },
+      "properties": {
+        ""
       }
     },
     {
@@ -77,7 +80,7 @@
           "retentionInDays": 364
         },
         "containerDeleteRetentionPolicy": {
-          "allowPermanentDelete": true,
+          "allowPermanentDelete": false,
           "days": 364,
           "enabled": true
         },

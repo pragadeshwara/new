@@ -74,7 +74,6 @@
             "uri": "[concat(parameters('uri'),'tv-infra-storageAccount.json')]"        },
           "parameters": {
             "environment": {"value": "[parameters('environment')]" },
-            "resourceGroupName": { "value": "[parameters('resourceGroupName')]" },
             "location": { "value": "[parameters('location')]" },
             "storage-kind": {"value": "[parameters('storage-kind')]"},
             "storage-sku-name": {"value": "[parameters('storage-sku-name')]"}

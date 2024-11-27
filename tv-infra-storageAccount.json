@@ -67,7 +67,7 @@
           "days": 30
         },
         "deleteRetentionPolicy": {
-          "allowPermanentDelete": true,
+          "allowPermanentDelete": false,
           "enabled": true,
           "days": 364
         },

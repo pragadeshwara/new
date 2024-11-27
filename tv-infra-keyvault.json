@@ -5,9 +5,6 @@
       "environment": {
       "type": "string"
       },
-      "resourceGroupName": {
-      "type": "string"
-      },
       "location": {
         "type": "string"
       }
@@ -64,5 +61,11 @@
           }
         ]
       }
-    ]
+    ],
+    "outputs": {
+      "keyvaultname": {
+        "type": "string",
+        "value": "[variables('keyvaultname')]"
+      }
+    }
   }

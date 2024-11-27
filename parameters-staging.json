@@ -38,6 +38,18 @@
       },
       "storage-sku-name":{
         "value": "Standard_LRS"
+      },
+      "serverName": {
+        "value": "myPostgreSQLServer"
+      },
+      "administratorLogin": {
+        "value": "adminUser"
+      },
+      "administratorPassword": {
+        "value": "sqladminpassword"
+      },
+      "databaseName": {
+        "value": "myDatabase"
       }
     }
 }

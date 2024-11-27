@@ -22,27 +22,50 @@
       },
       "subnet1-address-prefix": {
         "type": "string"
+      },
+      "storage-kind":{
+        "type": "string"
+      },
+      "storage-sku-name":{
+        "type": "string"
       }    
     },
     "resources": [
-        {
-          "type": "Microsoft.Resources/deployments",
-          "apiVersion": "2021-04-01",
-          "name": "tv-infra-Vnet",
-          "properties": {
-            "mode": "Incremental",
-            "templateLink": {
-              "uri": "[concat(parameters('uri'), 'tv-infra-VirtualNetwork.json')]"
-            },
-            "parameters": {
-              "environment": { "value": "[parameters('environment')]" },
-              "resourceGroupName": { "value": "[parameters('resourceGroupName')]" },
-              "location": { "value": "[parameters('location')]" },
-              "address-prefix": { "value": "[parameters('address-prefix')]" },
-              "subnet1-address-prefix": { "value": "[parameters('subnet1-address-prefix')]" },
-              "Nsg-rules": { "value": "[parameters('Nsg-rule')]" }
-            }
+      {
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2021-04-01",
+        "name": "tv-infra-Vnet",
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "[concat(parameters('uri'), 'tv-infra-VirtualNetwork.json')]"
+          },
+          "parameters": {
+            "environment": { "value": "[parameters('environment')]" },
+            "resourceGroupName": { "value": "[parameters('resourceGroupName')]" },
+            "location": { "value": "[parameters('location')]" },
+            "address-prefix": { "value": "[parameters('address-prefix')]" },
+            "subnet1-address-prefix": { "value": "[parameters('subnet1-address-prefix')]" },
+            "Nsg-rules": { "value": "[parameters('Nsg-rule')]" }
           }
         }
+      },
+      {
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2021-04-01",
+        "name": "tv-infra-storageAccount",
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "[concat(parameters('uri'),'tv-infra-storageAccount.json')]"        },
+          "parameters": {
+            "environment": {"value": "[parameters('environment')]" },
+            "resourceGroupName": { "value": "[parameters('resourceGroupName')]" },
+            "location": { "value": "[parameters('location')]" },
+            "storage-kind": {"value": "[parameters('storage-kind')]"},
+            "storage-sku-name": {"value": "[parameters('storage-sku-name')]"}
+          }
+        }
+      }
     ]
 }

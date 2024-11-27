@@ -32,6 +32,12 @@
       },
       "subnet1-address-prefix": {
         "value": "10.0.1.0/24"
+      },
+      "storage-kind":{
+        "value": "StorageV2"
+      },
+      "storage-sku-name":{
+        "value": "Standard_LRS"
       }
     }
 }

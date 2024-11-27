@@ -64,7 +64,7 @@
       "properties": {
         "restorePolicy": {
           "enabled": true,
-          "days": 364
+          "days": 30
         },
         "deleteRetentionPolicy": {
           "allowPermanentDelete": true,

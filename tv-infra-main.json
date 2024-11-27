@@ -122,7 +122,6 @@
             "uri": "[concat(parameters('uri'),'tv-infra-keyvault.json')]" },
           "parameters": {
             "environment": {"value": "[parameters('environment')]" },
-            "resourceGroupName": { "value": "[parameters('resourceGroupName')]" },
             "location": { "value": "[parameters('location')]"}
           }
         }

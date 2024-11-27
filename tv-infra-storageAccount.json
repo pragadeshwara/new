@@ -66,6 +66,10 @@
           "days": 365,
           "enabled": true
         },
+        "changeFeed": {
+          "enabled": true,
+          "retentionInDays": 365
+        },
         "containerDeleteRetentionPolicy": {
           "allowPermanentDelete": true,
           "days": 365,

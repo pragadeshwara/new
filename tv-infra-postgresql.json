@@ -6,7 +6,7 @@
             "type": "string"
         },
         "resourceGroupName": {
-        "type": "string"
+            "type": "string"
         },
         "location": {
             "type": "string"
@@ -31,75 +31,75 @@
         }
     },
     "variables": {
-        "name": "[concat(parameters('environment'),parameters('serverName'))]"
+        "name": "[concat(parameters('environment'), parameters('serverName'))]"
     },
-    "resources": [  
+    "resources": [
         {
-        "type": "Microsoft.DBforPostgreSQL/servers",
-        "apiVersion": "2017-12-01-preview",
-        "name": "[variables('name')]",
-        "location": "[parameters('location')]",
-        "properties": {
-            "version": "11",
-            "administratorLogin": "[parameters('administratorLogin')]",
-            "administratorLoginPassword": "[parameters('administratorPassword')]",
-            "storageProfile": {
-            "storageMB": 5120,
-            "backupRetentionDays": 7,
-            "geoRedundantBackup": "Disabled",
-            "storageAutogrow": "Enabled"
+            "type": "Microsoft.DBforPostgreSQL/servers",
+            "apiVersion": "2017-12-01-preview",
+            "name": "[variables('name')]",
+            "location": "[parameters('location')]",
+            "properties": {
+                "version": "11",
+                "administratorLogin": "[parameters('administratorLogin')]",
+                "administratorLoginPassword": "[parameters('administratorPassword')]",
+                "storageProfile": {
+                    "storageMB": 5120,
+                    "backupRetentionDays": 7,
+                    "geoRedundantBackup": "Disabled",
+                    "storageAutogrow": "Enabled"
+                },
+                "sslEnforcement": "Enabled",
+                "publicNetworkAccess": "Enabled"
             },
-            "sslEnforcement": "Enabled",
-            "publicNetworkAccess": "Enabled"
-        },
-        "sku": {
-            "name": "B_Gen5_1",
-            "tier": "Basic",
-            "family": "Gen5",
-            "capacity": 1
-        }
+            "sku": {
+                "name": "B_Gen5_1",
+                "tier": "Basic",
+                "family": "Gen5",
+                "capacity": 1
+            }
         },
         {
-        "type": "Microsoft.DBforPostgreSQL/servers/databases",
-        "apiVersion": "2017-12-01-preview",
-        "name": "[concat(variables('name'), '/', parameters('databaseName'))]",
-        "dependsOn": [
-            "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('serverName'))]"
-        ],
-        "properties": {
-            "charset": "UTF8",
-            "collation": "English_United States.1252"
-        }
+            "type": "Microsoft.DBforPostgreSQL/servers/databases",
+            "apiVersion": "2017-12-01-preview",
+            "name": "[concat(variables('name'), '/', parameters('databaseName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('name'))]"
+            ],
+            "properties": {
+                "charset": "UTF8",
+                "collation": "English_United States.1252"
+            }
         },
         {
-        "type": "Microsoft.KeyVault/vaults/secrets",
-        "apiVersion": "2021-10-01",
-        "name": "[concat(parameters('keyVaultName'), '/postgresqlAdminUser')]",
-        "dependsOn": [
-            "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
-            "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('serverName'))]"
-        ],
-        "properties": {
-            "value": "[parameters('administratorLogin')]"
-        }
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "2021-10-01",
+            "name": "[concat(parameters('keyVaultName'), '/postgresqlAdminUser')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('name'))]"
+            ],
+            "properties": {
+                "value": "[parameters('administratorLogin')]"
+            }
         },
         {
-        "type": "Microsoft.KeyVault/vaults/secrets",
-        "apiVersion": "2021-10-01",
-        "name": "[concat(parameters('keyVaultName'), '/postgresqlAdminPassword')]",
-        "dependsOn": [
-            "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
-            "[resourceId('Microsoft.DBforPostgreSQL/servers', parameters('serverName'))]"
-        ],
-        "properties": {
-            "value": "[parameters('administratorPassword')]"
-        }
+            "type": "Microsoft.KeyVault/vaults/secrets",
+            "apiVersion": "2021-10-01",
+            "name": "[concat(parameters('keyVaultName'), '/postgresqlAdminPassword')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+                "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('name'))]"
+            ],
+            "properties": {
+                "value": "[parameters('administratorPassword')]"
+            }
         }
     ],
     "outputs": {
         "postgresqlConnectionString": {
-        "type": "string",
-        "value": "[concat('Server=', parameters('serverName'), '.postgres.database.azure.com; Database=', parameters('databaseName'), '; User Id=', parameters('administratorLogin'), '@', parameters('serverName'), '; Password=<your-password>; Ssl Mode=Require')]"
+            "type": "string",
+            "value": "[concat('Server=', variables('name'), '.postgres.database.azure.com; Database=', parameters('databaseName'), '; User Id=', parameters('administratorLogin'), '@', variables('name'), '; Password=<your-password>; Ssl Mode=Require')]"
         }
     }
 }

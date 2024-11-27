@@ -25,9 +25,6 @@
         },
         "keyVaultName": {
             "type": "string"
-        },
-        "keyVaultAccessObjectId": {
-            "type": "string"
         }
     },
     "variables": {

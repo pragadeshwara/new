@@ -142,8 +142,7 @@
             "serverName": {"value": "[parameters('serverName')]"},
             "administratorLogin": {"value": "[parameters('administratorLogin')]"},
             "administratorPassword": {"value": "[parameters('administratorPassword')]"},
-            "databaseName": {"value": "[parameters('databaseName')]"},
-            "keyVaultAccessObjectId": {"value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'tv-userAssigned-ManagedIdentity'), '2023-01-31').principalId]"}
+            "databaseName": {"value": "[parameters('databaseName')]"}
           }
         }
       }

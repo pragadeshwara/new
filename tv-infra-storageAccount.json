@@ -35,7 +35,7 @@
     }
   },
   "variables": {
-    "storage-name": "[toLower(concat( parameters('environment'),parameters('resourceGroupName'),'tvstorage'))]"
+    "storage-name": "[toLower(concat( parameters('environment'),'tvstorage'))]"
   },
   "resources": [
     {

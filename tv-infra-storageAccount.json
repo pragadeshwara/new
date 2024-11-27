@@ -63,13 +63,14 @@
       ],
       "properties": {
         "restorePolicy": {
-          "days": 364,
-          "enabled": true
+          "enabled": true,
+          "days": 364
         },
         "deleteRetentionPolicy": {
           "allowPermanentDelete": true,
-          "days": 364,
-          "enabled": true
+          "enabled": true,
+          "days": 364
+          
         },
         "changeFeed": {
           "enabled": true,

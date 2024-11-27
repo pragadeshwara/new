@@ -35,7 +35,7 @@
     }
   },
   "variables": {
-    "storage-name": "[toLower(concat( parameters('environment'),'tvstorage'))]"
+    "storage-name": "[toLower(concat(parameters('environment'), 'tvstorage'))]"
   },
   "resources": [
     {
@@ -57,7 +57,7 @@
     {
       "type": "Microsoft.Storage/storageAccounts/blobServices",
       "apiVersion": "2021-09-01",
-      "name": "[concat(variables('storage-name') , '/default')]",
+      "name": "[concat(variables('storage-name'), '/default')]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storage-name'))]"
       ],
@@ -70,7 +70,6 @@
           "allowPermanentDelete": true,
           "enabled": true,
           "days": 364
-          
         },
         "changeFeed": {
           "enabled": true,

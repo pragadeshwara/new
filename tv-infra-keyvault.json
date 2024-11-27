@@ -13,7 +13,7 @@
       }
     },
     "variables": {
-      "keyvaultname": "[concat('tv',parameters('environment'),parameters('resourceGroupName'),'keyvault')]"
+      "keyvaultname": "[concat('tv',parameters('environment'),'keyvault')]"
     },
     "resources": [
       {

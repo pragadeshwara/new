@@ -6,7 +6,7 @@
         "value": "https://raw.githubusercontent.com/pragadeshwara/new/main/"
       },
       "environment": {
-        "value": "staging"
+        "value": "prod"
       },
       "resourceGroupName": {
         "value": "ADinfrastructure"

@@ -63,21 +63,21 @@
       ],
       "properties": {
         "restorePolicy": {
-          "days": 365,
+          "days": 364,
           "enabled": true
         },
         "deleteRetentionPolicy": {
           "allowPermanentDelete": true,
-          "days": 365,
+          "days": 364,
           "enabled": true
         },
         "changeFeed": {
           "enabled": true,
-          "retentionInDays": 365
+          "retentionInDays": 364
         },
         "containerDeleteRetentionPolicy": {
           "allowPermanentDelete": true,
-          "days": 365,
+          "days": 364,
           "enabled": true
         },
         "isVersioningEnabled": true

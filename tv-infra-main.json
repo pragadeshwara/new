@@ -90,8 +90,7 @@
             "uri": "[concat(parameters('uri'),'tv-infra-commservice.json')]"        },
           "parameters": {
             "environment": {"value": "[parameters('environment')]" },
-            "resourceGroupName": { "value": "[parameters('resourceGroupName')]" },
-            "location": { "value": "[parameters('location')]" }
+            "resourceGroupName": { "value": "[parameters('resourceGroupName')]" }
           }
         }
       }

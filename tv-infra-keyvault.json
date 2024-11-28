@@ -21,9 +21,6 @@
         "tags": {
           "displayName": "[variables('keyvaultname')]"
         },
-        "identity": {
-          "type": "SystemAssigned"
-        },
         "properties": {
           "enabledForDeployment": true,
           "enabledForTemplateDeployment": true,

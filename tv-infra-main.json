@@ -136,7 +136,6 @@
             "uri": "[concat(parameters('uri'),'tv-infra-postgresql.json')]" },
           "parameters": {
             "environment": {"value": "[parameters('environment')]" },
-            "resourceGroupName": { "value": "[parameters('resourceGroupName')]" },
             "location": { "value": "[parameters('location')]"},
             "keyVaultName": {"value": "[reference('tv-infra-keyvault.json').outputs.keyvaultname.value]"},
             "serverName": {"value": "[parameters('serverName')]"},

@@ -44,12 +44,6 @@
     },
     "resources": [
       {
-        "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-        "apiVersion": "2023-01-31",
-        "name": "tv-userAssigned-ManagedIdentity",
-        "location": "[parameters('location')]"
-      },
-      {
         "type": "Microsoft.Resources/deployments",
         "apiVersion": "2021-04-01",
         "name": "tv-infra-Vnet",
@@ -116,6 +110,7 @@
         "type": "Microsoft.Resources/deployments",
         "apiVersion": "2021-04-01",
         "name": "tv-infra-keyvault.json",
+        "identity": "SystemAssigned",
         "properties": {
           "mode": "Incremental",
           "templateLink": {
@@ -130,6 +125,7 @@
         "type": "Microsoft.Resources/deployments",
         "apiVersion": "2021-04-01",
         "name": "tv-infra-postgresql.json",
+        "identity": "SystemAssigned",
         "properties": {
           "mode": "Incremental",
           "templateLink": {

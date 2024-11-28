@@ -21,6 +21,9 @@
         "tags": {
           "displayName": "[variables('keyvaultname')]"
         },
+        "identity": {
+          "type": "SystemAssigned"
+        },
         "properties": {
           "enabledForDeployment": true,
           "enabledForTemplateDeployment": true,
@@ -29,10 +32,11 @@
           "accessPolicies": [
             {
               "tenantId": "[subscription().tenantId]",
-              "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'tv-userAssigned-ManagedIdentity'), '2023-01-31').principalId]",
+              "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/ManagedIdentity', variables('keyvaultname')), '2023-07-01').principalId]",
               "permissions": {
                 "keys": [
-                  "Get"
+                  "Get",
+                  "list"
                 ],
                 "secrets": [
                   "List",
@@ -50,7 +54,7 @@
         "resources": [
           {
             "type": "secrets",
-            "name": "keyVaultSecret1",
+            "name": "keyVaultSecret",
             "apiVersion": "2016-10-01",
             "dependsOn": [
               "[resourceId('Microsoft.KeyVault/vaults', variables('keyvaultname'))]"

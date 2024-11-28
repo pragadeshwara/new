@@ -22,14 +22,14 @@
           "displayName": "[variables('keyvaultname')]"
         },
         "properties": {
-          "enabledForDeployment": true ,
+          "enabledForDeployment": true,
           "enabledForTemplateDeployment": true,
           "enabledForDiskEncryption": true,
           "tenantId": "[subscription().tenantId]",
           "accessPolicies": [
             {
               "tenantId": "[subscription().tenantId]",
-              "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/ManagedIdentity', variables('keyvaultname')), '2023-07-01').principalId]",
+              "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'tv-userAssigned-ManagedIdentity'), '2023-01-31').principalId]",
               "permissions": {
                 "keys": [
                   "Get",

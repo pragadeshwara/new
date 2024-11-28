@@ -22,7 +22,7 @@
           "displayName": "[variables('keyvaultname')]"
         },
         "properties": {
-          "enabledForDeployment": true,
+          "enabledForDeployment": true ,
           "enabledForTemplateDeployment": true,
           "enabledForDiskEncryption": true,
           "tenantId": "[subscription().tenantId]",

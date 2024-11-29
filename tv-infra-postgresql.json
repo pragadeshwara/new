@@ -68,24 +68,26 @@
         {
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2021-10-01",
-            "name": "[concat(parameters('keyVaultName'), '/postgresqlAdminUser')]",
+            "name": "[parameters('keyVaultName')]",
+            "properties": {
+                "secretName": "postgresqlAdminUser",
+                "value": "[parameters('administratorLogin')]"
+            },
             "dependsOn": [
                 "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('name'))]"
-            ],
-            "properties": {
-                "value": "[parameters('administratorLogin')]"
-            }
+            ]
         },
         {
             "type": "Microsoft.KeyVault/vaults/secrets",
             "apiVersion": "2021-10-01",
-            "name": "[concat(parameters('keyVaultName'), '/postgresqlAdminPassword')]",
+            "name": "[parameters('keyVaultName')]",
+            "properties": {
+                "secretName": "postgresqlAdminPassword",
+                "value": "[parameters('administratorPassword')]"
+            },
             "dependsOn": [
                 "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('name'))]"
-            ],
-            "properties": {
-                "value": "[parameters('administratorPassword')]"
-            }
+            ]
         }
     ],
     "outputs": {

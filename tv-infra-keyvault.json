@@ -21,14 +21,28 @@
         "tags": {
           "displayName": "[variables('keyvaultname')]"
         },
-        "identity": {
-          "type": "SystemAssigned"
-        },
         "properties": {
           "enabledForDeployment": true,
           "enabledForTemplateDeployment": true,
           "enabledForDiskEncryption": true,
           "tenantId": "[subscription().tenantId]",
+          "accessPolicies": [
+            {
+              "tenantId": "[subscription().tenantId]",
+              "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'tv-userAssigned-ManagedIdentity'), '2023-01-31').principalId]",
+              "permissions": {
+                "keys": [
+                  "Get",
+                  "list"
+                ],
+                "secrets": [
+                  "List",
+                  "Get",
+                  "Set"
+                ]
+              }
+            }
+          ],
           "sku": {
             "name": "standard",
             "family": "A"

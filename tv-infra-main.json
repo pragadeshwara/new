@@ -40,7 +40,40 @@
       },
       "databaseName": {
         "type": "string"
-      }   
+      },
+      "registrySku": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ]
+    },
+    "adminUserEnabled": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "containerImages": {
+      "type": "array",
+      "defaultValue": [
+        "image1:tag",
+        "image2:tag",
+        "image3:tag"
+      ]
+    },
+    "cpuCores": {
+      "type": "string",
+      "defaultValue": "1"
+    },
+    "memoryInGB": {
+      "type": "string",
+      "defaultValue": "1.5"
+    },
+    "containerPorts": {
+      "type": "array",
+      "defaultValue": [80, 8080, 5000]
+    }
     },
     "resources": [
       {
@@ -142,6 +175,26 @@
             "administratorLogin": {"value": "[parameters('administratorLogin')]"},
             "administratorPassword": {"value": "[parameters('administratorPassword')]"},
             "databaseName": {"value": "[parameters('databaseName')]"}
+          }
+        }
+      },
+      {
+        "type": "Microsoft.Resources/deployments",
+        "apiVersion": "2021-04-01",
+        "name": "tv-server-containers.json",
+        "properties": {
+          "mode": "Incremental",
+          "templateLink": {
+            "uri": "[concat(parameters('uri'),'tv-server-container.json')]" },
+          "parameters": {
+            "environment": {"value": "[parameters('environment')]" },
+            "location": { "value": "[parameters('location')]"},
+            "registrySku": {"value": "[parameters('registrySku')]"},
+            "adminUserEnabled": {"value": "[parameters('adminUserEnabled')]"},
+            "containerImages": {"value": "[parameters('containerImages')]"},
+            "cpuCores": {"value": "[parameters('cpuCores')]"},
+            "memoryInGB": {"value": "[parameters('memoryInGB')]"},
+            "containerPorts": {"value": "[parameters('containerPorts')]"}
           }
         }
       }

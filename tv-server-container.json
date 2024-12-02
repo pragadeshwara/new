@@ -1,0 +1,156 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environment": {
+      "type": "string",
+      "defaultValue": "dev"
+    },
+    "location": {
+      "type": "string"
+    },
+    "registrySku": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ]
+    },
+    "adminUserEnabled": {
+      "type": "bool",
+      "defaultValue": false
+    },
+    "containerImages": {
+      "type": "array",
+      "defaultValue": [
+        "image1:tag",
+        "image2:tag",
+        "image3:tag"
+      ]
+    },
+    "cpuCores": {
+      "type": "string",
+      "defaultValue": "1"
+    },
+    "memoryInGB": {
+      "type": "string",
+      "defaultValue": "1.5"
+    },
+    "containerPorts": {
+      "type": "array",
+      "defaultValue": [80, 8080, 5000]
+    }
+  },
+  "variables": {
+    "registryName": "[concat('tv-', parameters('environment'), '-acr')]",
+    "containerGroupName": "[concat('tv-', parameters('environment'), '-aci')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2022-02-01-preview",
+      "name": "[variables('registryName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('registrySku')]"
+      },
+      "properties": {
+        "adminUserEnabled": "[parameters('adminUserEnabled')]"
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2021-10-01",
+      "name": "[variables('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))]"
+      ],
+      "properties": {
+        "containers": [
+          {
+            "name": "container1",
+            "properties": {
+              "image": "[concat(reference(resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))).loginServer, '/', parameters('containerImages')[0])]",
+              "resources": {
+                "requests": {
+                  "cpu": "[parameters('cpuCores')]",
+                  "memoryInGB": "[parameters('memoryInGB')]"
+                }
+              },
+              "ports": [
+                {
+                  "port": "[parameters('containerPorts')[0]]"
+                }
+              ]
+            }
+          },
+          {
+            "name": "container2",
+            "properties": {
+              "image": "[concat(reference(resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))).loginServer, '/', parameters('containerImages')[1])]",
+              "resources": {
+                "requests": {
+                  "cpu": "[parameters('cpuCores')]",
+                  "memoryInGB": "[parameters('memoryInGB')]"
+                }
+              },
+              "ports": [
+                {
+                  "port": "[parameters('containerPorts')[1]]"
+                }
+              ]
+            }
+          },
+          {
+            "name": "container3",
+            "properties": {
+              "image": "[concat(reference(resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))).loginServer, '/', parameters('containerImages')[2])]",
+              "resources": {
+                "requests": {
+                  "cpu": "[parameters('cpuCores')]",
+                  "memoryInGB": "[parameters('memoryInGB')]"
+                }
+              },
+              "ports": [
+                {
+                  "port": "[parameters('containerPorts')[2]]"
+                }
+              ]
+            }
+          }
+        ],
+        "osType": "Linux",
+        "ipAddress": {
+          "type": "Public",
+          "ports": [
+            {
+              "protocol": "TCP",
+              "port": "[parameters('containerPorts')[0]]"
+            },
+            {
+              "protocol": "TCP",
+              "port": "[parameters('containerPorts')[1]]"
+            },
+            {
+              "protocol": "TCP",
+              "port": "[parameters('containerPorts')[2]]"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "registryLoginServer": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ContainerRegistry/registries', variables('registryName'))).loginServer]"
+    },
+    "containerGroupIp": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.ContainerInstance/containerGroups', variables('containerGroupName'))).ipAddress.ip]"
+    }
+  }
+}

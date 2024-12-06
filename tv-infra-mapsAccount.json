@@ -1,43 +1,30 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json",
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
     "environment": {
       "type": "string",
       "metadata": {
-        "description": "The environment (e.g., dev, test, prod)."
-      }
-    },
-    "resourceGroupName": {
-      "type": "string",
-      "defaultValue": "TV-infrastructure",
-      "metadata": {
-        "description": "The name of the resource group."
+        "description": "Environment name"
       }
     }
   },
   "resources": [
     {
       "type": "Microsoft.Maps/accounts",
-      "apiVersion": "2024-01-01-preview",
-      "name": "[concat('tv-', parameters('environment'), '-', parameters('resourceGroupName'), '-', 'mapsAccount')]",
-      "kind": "Gen2",
-      "location": "West Europe",
-      "properties": {
-        "cors": {
-          "corsRules": [
-            {
-              "allowedOrigins": [ "*" ]
-            }
-          ]
-        }
-      },
+      "apiVersion": "2021-07-01-preview",
+      "name": "[concat('maps-account-', parameters('environment'))]",
+      "location": "[resourceGroup().location]",
       "sku": {
-          "name": "G2"
+        "name": "S1"
       },
-      "identity": {
-        "type": "SystemAssigned"
-      }
+      "properties": {}
     }
-  ]
+  ],
+  "outputs": {
+    "maps-account-name": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Maps/accounts', concat('maps-account-', parameters('environment')))]"
+    }
+  }
 }

@@ -1,0 +1,80 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "loadBalancerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Load Balancer"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for the Load Balancer"
+      }
+    },
+    "frontendIpConfigName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Frontend IP Configuration"
+      }
+    },
+    "backendPoolName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Backend Pool"
+      }
+    },
+    "probeName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Probe"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/loadBalancers",
+      "apiVersion": "2022-01-01",
+      "name": "[parameters('loadBalancerName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "frontendIPConfigurations": [
+          {
+            "name": "[parameters('frontendIpConfigName')]",
+            "properties": {
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(parameters('loadBalancerName'), '-PublicIP'))]"
+              }
+            }
+          }
+        ],
+        "backendAddressPools": [
+          {
+            "name": "[parameters('backendPoolName')]"
+          }
+        ],
+        "probes": [
+          {
+            "name": "[parameters('probeName')]",
+            "properties": {
+              "protocol": "Http",
+              "port": 80,
+              "requestPath": "/health",
+              "intervalInSeconds": 5,
+              "numberOfProbes": 2
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "loadBalancerName": {
+      "type": "string",
+      "value": "[parameters('loadBalancerName')]"
+    }
+  }
+}

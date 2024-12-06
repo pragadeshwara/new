@@ -17,39 +17,15 @@
     "subnet1-address-prefix": {
       "type": "string"
     },
-    "Nsg-rules": {
-      "type": "object"
+    "nsg-name": {
+      "type": "string"
     }
   },
   "variables": {
-    "nsgName": "[concat('tv-', parameters('environment'), '-', parameters('resourceGroupName'), '-NSG')]",
     "vnetName": "[concat('tv-', parameters('environment'), '-', parameters('resourceGroupName'), '-virtualNetwork')]",
     "subnetName": "[concat('tv-', parameters('environment'), '-', parameters('resourceGroupName'), '-virtualNetwork-subnet1')]"
   },
   "resources": [
-    {
-      "name": "[variables('nsgName')]",
-      "type": "Microsoft.Network/networkSecurityGroups",
-      "apiVersion": "2023-11-01",
-      "location": "[parameters('location')]",
-      "properties": {
-        "securityRules": [
-          {
-            "name": "[parameters('Nsg-rules').ruleName]",
-            "properties": {
-              "protocol": "[parameters('Nsg-rules').protocol]",
-              "sourcePortRange": "[parameters('Nsg-rules').sourcePortRange]",
-              "destinationPortRange": "[parameters('Nsg-rules').destinationPortRange]",
-              "sourceAddressPrefix": "[parameters('Nsg-rules').sourceAddressPrefix]",
-              "destinationAddressPrefix": "[parameters('Nsg-rules').destinationAddressPrefix]",
-              "access": "[parameters('Nsg-rules').access]",
-              "direction": "[parameters('Nsg-rules').direction]",
-              "priority": "[parameters('Nsg-rules').priority]"
-            }
-          }
-        ]
-      }
-    },
     {
       "name": "[variables('vnetName')]",
       "type": "Microsoft.Network/virtualNetworks",
@@ -59,7 +35,7 @@
         "displayName": "[variables('vnetName')]"
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+        "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg-name'))]"
       ],
       "properties": {
         "addressSpace": {
@@ -73,7 +49,7 @@
             "properties": {
               "addressPrefix": "[parameters('subnet1-address-prefix')]",
               "networkSecurityGroup": {
-                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('nsg-name'))]"
               }
             }
           }

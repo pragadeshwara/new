@@ -13,22 +13,10 @@
       "metadata": {
         "description": "The location for all resources."
       }
-    },
-    "storage-kind": {
-      "type": "string",
-      "metadata": {
-        "description": "Kind value of the storage account."
-      }
-    },
-    "storage-sku-name": {
-      "type": "string",
-      "metadata": {
-        "description": "SKU of the storage account."
-      }
     }
   },
   "variables": {
-    "storage-name": "[toLower(concat(parameters('environment'), 'tvstorage'))]"
+    "storage-name": "[concat('tv',parameters('environment'), 'storage')]"
   },
   "resources": [
     {
@@ -39,42 +27,19 @@
         "displayName": "[variables('storage-name')]"
       },
       "location": "[parameters('location')]",
-      "kind": "[parameters('storage-kind')]",
+      "kind": "BlobStorage",
       "sku": {
-        "name": "[parameters('storage-sku-name')]"
+        "name": "Standard_LRS"
       },
       "identity": {
         "type": "SystemAssigned"
       }
-    },
-    {
-      "type": "Microsoft.Storage/storageAccounts/blobServices",
-      "apiVersion": "2021-09-01",
-      "name": "[concat(variables('storage-name'), '/default')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Storage/storageAccounts', variables('storage-name'))]"
-      ],
-      "properties": {
-        "restorePolicy": {
-          "enabled": true,
-          "days": 30
-        },
-        "deleteRetentionPolicy": {
-          "allowPermanentDelete": false,
-          "enabled": true,
-          "days": 364
-        },
-        "changeFeed": {
-          "enabled": true,
-          "retentionInDays": 364
-        },
-        "containerDeleteRetentionPolicy": {
-          "allowPermanentDelete": false,
-          "days": 364,
-          "enabled": true
-        },
-        "isVersioningEnabled": true
-      }
     }
-  ]
+  ],
+  "outputs": {
+    "storage-account-name": {
+      "type": "string",
+      "value": "[variables('storage-name')]"
+    }
+  }
 }

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environment": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "Nsg-rules": {
+      "type": "object",
+      "defaultValue": {
+        "protocol": "Tcp",
+        "sourcePortRange": "*",
+        "destinationPortRange": "22",
+        "sourceAddressPrefix": "*",
+        "destinationAddressPrefix": "*",
+        "access": "Allow",
+        "direction": "Inbound",
+        "priority": 100,
+        "RuleName": "Allow_SSH"
+      }
+    }
+  },
+  "variables": {
+    "nsgName": "[concat('tv-', parameters('environment'), '-nsg')]"
+  },
+  "resources": [
+    {
+      "name": "[variables('nsgName')]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2023-11-01",
+      "location": "[parameters('location')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "[parameters('Nsg-rules').ruleName]",
+            "properties": {
+              "protocol": "[parameters('Nsg-rules').protocol]",
+              "sourcePortRange": "[parameters('Nsg-rules').sourcePortRange]",
+              "destinationPortRange": "[parameters('Nsg-rules').destinationPortRange]",
+              "sourceAddressPrefix": "[parameters('Nsg-rules').sourceAddressPrefix]",
+              "destinationAddressPrefix": "[parameters('Nsg-rules').destinationAddressPrefix]",
+              "access": "[parameters('Nsg-rules').access]",
+              "direction": "[parameters('Nsg-rules').direction]",
+              "priority": "[parameters('Nsg-rules').priority]"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "nsg-name": {
+      "type": "string",
+      "value": "[variables('nsgName')]"
+    }
+  }
+}

@@ -1,72 +1,131 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "environment": {
-      "type": "string"
-      },
-      "location": {
-        "type": "string"
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for the Key Vault"
       }
     },
-    "variables": {
-      "keyvaultname": "[concat('tv',parameters('environment'),'keyvault')]"
-    },
-    "resources": [
-      {
-        "name": "[variables('keyvaultname')]",
-        "type": "Microsoft.KeyVault/vaults",
-        "apiVersion": "2023-07-01",
-        "location": "[parameters('location')]",
-        "tags": {
-          "displayName": "[variables('keyvaultname')]"
-        },
-        "properties": {
-          "enabledForDeployment": true,
-          "enabledForTemplateDeployment": true,
-          "enabledForDiskEncryption": true,
-          "tenantId": "[subscription().tenantId]",
-          "accessPolicies": [
-            {
-              "tenantId": "[subscription().tenantId]",
-              "objectId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', 'tv-userAssigned-ManagedIdentity'), '2023-01-31').principalId]",
-              "permissions": {
-                "keys": [
-                  "Get",
-                  "list"
-                ],
-                "secrets": [
-                  "List",
-                  "Get",
-                  "Set"
-                ]
-              }
-            }
-          ],
-          "sku": {
-            "name": "standard",
-            "family": "A"
-          }
-        },
-        "resources": [
-          {
-            "type": "secrets",
-            "name": "keyVaultSecret",
-            "apiVersion": "2016-10-01",
-            "dependsOn": [
-              "[resourceId('Microsoft.KeyVault/vaults', variables('keyvaultname'))]"
-            ],
-            "properties": {
-              "value": "secretValue"
-            }
-          }
-        ]
+    "environment": {
+      "type": "string",
+      "metadata": {
+        "description": "Environment name (e.g., dev, staging, production)"
       }
-    ],
-    "outputs": {
-      "keyvaultname": {
-        "type": "string",
-        "value": "[variables('keyvaultname')]"
+    },
+    "clientId": {
+      "type": "string",
+      "metadata": {
+        "description": "Client ID for application access"
+      }
+    },
+    "clientSecret": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Client Secret for application access"
+      }
+    },
+    "pgDbUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "PostgreSQL Database Username"
+      }
+    },
+    "pgDbPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "PostgreSQL Database Password"
       }
     }
+  },
+  "variables": {
+    "keyVaultName": "[concat('tv-', parameters('environment'), '-keyvault')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2021-10-01",
+      "name": "[variables('keyVaultName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "family": "A",
+          "name": "standard"
+        },
+        "tenantId": "[subscription().tenantId]",
+        "accessPolicies": [
+          {
+            "tenantId": "[subscription().tenantId]",
+            "objectId": "[parameters('clientId')]",
+            "permissions": {
+              "secrets": ["get", "list", "set", "delete", "purge"]
+            }
+          }
+        ],
+        "enabledForDeployment": true,
+        "enabledForDiskEncryption": true,
+        "enabledForTemplateDeployment": true
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2021-10-01",
+      "name": "[concat('kv-', parameters('environment'), '-', uniqueString(resourceGroup().id), '/pgDbUsername')]",
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', 'kv-', parameters('environment'), '-', uniqueString(resourceGroup().id))]"
+      ],
+      "properties": {
+        "value": "[parameters('pgDbUsername')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2021-10-01",
+      "name": "[concat('kv-', parameters('environment'), '-', uniqueString(resourceGroup().id), '/pgDbPassword')]",
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', 'kv-', parameters('environment'), '-', uniqueString(resourceGroup().id))]"
+      ],
+      "properties": {
+        "value": "[parameters('pgDbPassword')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2021-10-01",
+      "name": "[concat('kv-', parameters('environment'), '-', uniqueString(resourceGroup().id), '/clientId')]",
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', 'kv-', parameters('environment'), '-', uniqueString(resourceGroup().id))]"
+      ],
+      "properties": {
+        "value": "[parameters('clientId')]"
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2021-10-01",
+      "name": "[concat('kv-', parameters('environment'), '-', uniqueString(resourceGroup().id), '/clientSecret')]",
+      "dependsOn": [
+        "[concat('Microsoft.KeyVault/vaults/', 'kv-', parameters('environment'), '-', uniqueString(resourceGroup().id))]"
+      ],
+      "properties": {
+        "value": "[parameters('clientSecret')]"
+      }
+    }
+  ],
+  "outputs": {
+    "keyVaultName": {
+      "type": "string",
+      "value": "[variables('keyVaultName')]"
+    },
+    "pgDbUsernameSecretUri": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', concat('kv-', parameters('environment'), '-', uniqueString(resourceGroup().id)), 'pgDbUsername')).id]"
+    },
+    "pgDbPasswordSecretUri": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.KeyVault/vaults/secrets', concat('kv-', parameters('environment'), '-', uniqueString(resourceGroup().id)), 'pgDbPassword')).id]"
+    }
   }
+}

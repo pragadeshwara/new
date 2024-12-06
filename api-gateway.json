@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "apiGatewayName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the API Gateway"
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for the API Gateway"
+      }
+    },
+    "sku": {
+      "type": "string",
+      "defaultValue": "Developer",
+      "allowedValues": [
+        "Consumption",
+        "Developer",
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "SKU tier for the API Gateway"
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2021-08-01",
+      "name": "[parameters('apiGatewayName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('sku')]",
+        "capacity": 1
+      },
+      "properties": {
+        "publisherEmail": "admin@example.com",
+        "publisherName": "Admin"
+      }
+    }
+  ],
+  "outputs": {
+    "apiGatewayName": {
+      "type": "string",
+      "value": "[parameters('apiGatewayName')]"
+    }
+  }
+}

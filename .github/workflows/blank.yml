@@ -24,10 +24,15 @@ jobs:
   deploy-resources:
     runs-on: ubuntu-latest
     steps:
-      - name: Azure Login
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Azure CLI Login
+        run: |
+          az login --identity --allow-no-subscriptions
+          az account set --subscription ${AZURE_SUBSCRIPTION_ID}
+        env:
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Set User Inputs as Environment Variables
         run: |
@@ -41,11 +46,5 @@ jobs:
           deploy_resource_group() {
             az group create --name ${{ env.RESOURCE_GROUP }} --location ${{ env.LOCATION }}
           }
-
-          deploy_app() {
-            APP_ID=$(az ad app create --display-name $APP_NAME --query appId -o tsv)
-            SP_SECRET=$(az ad sp create --id $APP_ID --query password -o tsv)
-          }
-
           deploy_resource_group
-          deploy_app
+

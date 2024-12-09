@@ -1,0 +1,49 @@
+name: Deploy Azure Resources
+
+on:
+  workflow_dispatch:
+    inputs:
+      resource_group:
+        description: "Name of the Resource Group"
+        required: true
+        default: "default-rg"
+      location:
+        description: "Azure Region for Resources"
+        required: true
+        default: "eastus"
+      environment_setup:
+        description: "Create a new environment setup"
+        required: true
+        default: "false"
+      environment:
+        description: "Environment name"
+        required: true
+        default: "dev"
+
+jobs:
+  deploy-resources:
+    runs-on: ubuntu-latest
+    steps:
+			- name: Azure Login
+				uses: azure/login@v1
+				with:
+					creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+			- name: Set User Inputs as Environment Variables
+				run: |
+					echo "RESOURCE_GROUP=${{ github.event.inputs.resource_group }}" >> $GITHUB_ENV
+					echo "LOCATION=${{ github.event.inputs.location }}" >> $GITHUB_ENV
+					echo "ENVIRONMENT_SETUP=${{ github.event.inputs.environment_setup }}" >> $GITHUB_ENV
+					echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+        
+      - name: Deploy Azure Resources
+          deploy_resource_group() 
+					{
+            az group create --name ${{ env.RESOURCE_GROUP }} --location ${{ env.LOCATION }}
+          }
+
+          deploy_app()
+					{
+            APP_ID=$(az ad app create --display-name $APP_NAME --query appId -o tsv)
+            SP_SECRET=$(az ad sp create --id $APP_ID --query password -o tsv)
+          }

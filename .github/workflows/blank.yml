@@ -11,14 +11,6 @@ on:
         description: "Azure Region for Resources"
         required: true
         default: "eastus"
-      environment_setup:
-        description: "Create a new environment setup"
-        required: true
-        default: "false"
-      environment:
-        description: "Environment name"
-        required: true
-        default: "dev"
 
 jobs:
   deploy-resources:
@@ -27,24 +19,30 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Azure CLI Login
+      - name: Login to Azure CLI
         run: |
-          az login --identity --allow-no-subscriptions
-          az account set --subscription ${AAZURE_CREDENTIALS}
-        env:
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_CREDENTIALS }}
+          # Login using a predefined Azure identity (managed or local credentials)
+          az login --allow-no-subscriptions
+          az account set --subscription ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Set User Inputs as Environment Variables
+      - name: Create Service Principal
+        id: sp-create
         run: |
-          echo "RESOURCE_GROUP=${{ github.event.inputs.resource_group }}" >> $GITHUB_ENV
-          echo "LOCATION=${{ github.event.inputs.location }}" >> $GITHUB_ENV
-          echo "ENVIRONMENT_SETUP=${{ github.event.inputs.environment_setup }}" >> $GITHUB_ENV
-          echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
+          # Create a service principal with the Contributor role
+          SP_OUTPUT=$(az ad sp create-for-rbac --role Contributor --scopes /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }} --query "{clientId: appId, clientSecret: password, tenantId: tenant, subscriptionId: '${{ secrets.AZURE_SUBSCRIPTION_ID }}'}" -o json)
+          
+          # Save the credentials for subsequent steps
+          echo "${SP_OUTPUT}" > sp.json
+          echo "SP_CREDS=$(cat sp.json)" >> $GITHUB_ENV
+          
+      - name: Authenticate with Service Principal
+        uses: azure/login@v1
+        with:
+          creds: ${{ env.SP_CREDS }}
 
       - name: Deploy Azure Resources
         run: |
-          deploy_resource_group() {
-            az group create --name ${{ env.RESOURCE_GROUP }} --location ${{ env.LOCATION }}
-          }
-          deploy_resource_group
+          # Use Azure CLI to deploy resources
+          az group create --name ${{ github.event.inputs.resource_group }} --location ${{ github.event.inputs.location }}
+          echo "Resource group deployed successfully!"
 

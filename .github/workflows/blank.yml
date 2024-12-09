@@ -30,9 +30,9 @@ jobs:
       - name: Azure CLI Login
         run: |
           az login --identity --allow-no-subscriptions
-          az account set --subscription ${AZURE_SUBSCRIPTION_ID}
+          az account set --subscription ${AAZURE_CREDENTIALS}
         env:
-          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Set User Inputs as Environment Variables
         run: |

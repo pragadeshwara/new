@@ -39,9 +39,18 @@ jobs:
           echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
 
       - name: Deploy Azure Resources
-          deploy_resource_group() {
-            az group create --name ${{ env.RESOURCE_GROUP }} --location ${{ env.LOCATION }}
+        run: |
+          function deploy_resource_group() {
+            az group create --name "$RESOURCE_GROUP" --location "$LOCATION"
           }
+
+          function deploy_app() {
+            APP_NAME="${RESOURCE_GROUP}-app"
+            APP_ID=$(az ad app create --display-name "$APP_NAME" --query appId -o tsv)
+            SP_SECRET=$(az ad sp create --id "$APP_ID" --query password -o tsv)
+            echo "Service Principal App ID: $APP_ID"
+            echo "Service Principal Secret: $SP_SECRET"
+          }
+
           deploy_resource_group
-
-
+          deploy_app

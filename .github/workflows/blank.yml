@@ -38,4 +38,10 @@ jobs:
           echo "ENVIRONMENT_SETUP=${{ github.event.inputs.environment_setup }}" >> $GITHUB_ENV
           echo "ENVIRONMENT=${{ github.event.inputs.environment }}" >> $GITHUB_ENV
 
+      - name: Deploy Azure Resources
+          deploy_resource_group() {
+            az group create --name ${{ env.RESOURCE_GROUP }} --location ${{ env.LOCATION }}
+          }
+          deploy_resource_group
+
 

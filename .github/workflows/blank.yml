@@ -41,6 +41,9 @@ jobs:
       - name: Deploy Azure Resources
         run: |
 
+          function deploy_resource_group() {
+            az group create --name "$RESOURCE_GROUP" --location "$LOCATION"
+          }
           function deploy_keyvault() {
             PGSQL_PASSWORD=$(openssl rand -base64 32)
             echo "Deploying Key Vault..."

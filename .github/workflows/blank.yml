@@ -6,11 +6,11 @@ on:
       resource_group:
         description: "Name of the Resource Group"
         required: true
-        default: "default-rg"
+        default: "tv-infra"
       location:
         description: "Azure Region for Resources"
         required: true
-        default: "eastus"
+        default: "uksouth"
       environment_setup:
         description: "Create a new environment setup"
         required: true

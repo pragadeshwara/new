@@ -141,8 +141,6 @@ jobs:
             deploy_app_service_plan          
           fi
 
-      - name: Ensure All Resources Deployed
-        run: |
           declare -A expected_resources=(
             ["Microsoft.KeyVault/vaults"]="keyvaultOutput"
             ["Microsoft.DBforPostgreSQL/servers"]="postgresOutput"
@@ -154,13 +152,50 @@ jobs:
             ["Microsoft.Maps/accounts"]="mapsOutput"
             ["Microsoft.Web/serverfarms"]="appServicePlanOutput"
           )
-
+          
           for type in "${!expected_resources[@]}"; do
             output_name=${expected_resources[$type]}
-            resource_id=$(az deployment group show --resource-group $RESOURCE_GROUP --query "properties.outputs.$output_name.value" -o tsv)
-
+            
+            # Assign the correct deployment name based on resource type
+            case $type in
+              "Microsoft.KeyVault/vaults")
+                deployment_name="keyvault-deploy-${{ env.ENVIRONMENT }}"
+                ;;
+              "Microsoft.DBforPostgreSQL/servers")
+                deployment_name="postgres-deploy-${{ env.ENVIRONMENT }}"
+                ;;
+              "Microsoft.Network/virtualNetworks")
+                deployment_name="vnet-deploy-${{ env.ENVIRONMENT }}"
+                ;;
+              "Microsoft.Network/networkSecurityGroups")
+                deployment_name="nsg-deploy-${{ env.ENVIRONMENT }}"
+                ;;
+              "Microsoft.Storage/storageAccounts")
+                deployment_name="storage-deploy-${{ env.ENVIRONMENT }}"
+                ;;
+              "Microsoft.ContainerRegistry/registries")
+                deployment_name="acr-deploy-${{ env.ENVIRONMENT }}"
+                ;;
+              "Microsoft.Communication/CommunicationServices")
+                deployment_name="comm-service-deploy-${{ env.ENVIRONMENT }}"
+                ;;
+              "Microsoft.Maps/accounts")
+                deployment_name="maps-account-deploy-${{ env.ENVIRONMENT }}"
+                ;;
+              "Microsoft.Web/serverfarms")
+                deployment_name="app-service-plan-deploy-${{ env.ENVIRONMENT }}"
+                ;;
+              *)
+                echo "Unknown resource type: $type"
+                ;;
+            esac
+            
+            # Get the resource ID using the deployment name
+            resource_id=$(az deployment group show --resource-group $RESOURCE_GROUP --name $deployment_name --query "properties.outputs.$output_name.value" -o tsv)
+          
             if [ -z "$resource_id" ]; then
               echo "Resource missing: Type=$type"
+              # Deploy the missing resource
               case $type in
                 "Microsoft.KeyVault/vaults")
                   deploy_keyvault
@@ -196,5 +231,5 @@ jobs:
             else
               echo "Resource exists: Type=$type, ID=$resource_id"
             fi
-          done          
+          done        
 
